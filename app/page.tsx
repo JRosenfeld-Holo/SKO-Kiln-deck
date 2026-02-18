@@ -31,7 +31,7 @@ export default function Home() {
   const [phase, setPhase] = useState<"idle" | "exit" | "enter">("idle");
   const [direction, setDirection] = useState<1 | -1>(1);
   const timeoutRef = useRef<ReturnType<typeof setTimeout>>(null);
-  const slideKey = useRef(0);
+  const [slideKey, setSlideKey] = useState(0);
 
   const goTo = useCallback(
     (index: number) => {
@@ -43,7 +43,7 @@ export default function Home() {
 
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
       timeoutRef.current = setTimeout(() => {
-        slideKey.current += 1;
+        setSlideKey(prev => prev + 1);
         setDisplaySlide(index);
         setPhase("enter");
         timeoutRef.current = setTimeout(() => {
@@ -78,7 +78,7 @@ export default function Home() {
 
       {/* Slide Content */}
       <div
-        key={slideKey.current}
+        key={slideKey}
         className={`absolute inset-0 flex items-center justify-center z-10 transition-all duration-[280ms] ease-out
           ${phase === "exit" ? `opacity-0 ${exitTransform} scale-[0.98]` : ""}
           ${phase === "enter" ? "opacity-100 translate-x-0 scale-100" : ""}
@@ -117,13 +117,12 @@ export default function Home() {
               <button
                 key={s.id}
                 onClick={() => goTo(i)}
-                className={`cursor-pointer transition-all duration-300 rounded-full ${
-                  i === currentSlide
+                className={`cursor-pointer transition-all duration-300 rounded-full ${i === currentSlide
                     ? "w-8 h-2 bg-hologram-lime shadow-[0_0_12px_rgba(191,253,17,0.6)]"
                     : i < currentSlide
-                    ? "w-2 h-2 bg-hologram-lime/30 hover:bg-hologram-lime/50"
-                    : "w-2 h-2 bg-pure-white/15 hover:bg-pure-white/30"
-                }`}
+                      ? "w-2 h-2 bg-hologram-lime/30 hover:bg-hologram-lime/50"
+                      : "w-2 h-2 bg-pure-white/15 hover:bg-pure-white/30"
+                  }`}
                 aria-label={`Go to slide ${i + 1}: ${s.label}`}
               />
             ))}
@@ -141,7 +140,7 @@ export default function Home() {
                 className="w-8 h-8 flex items-center justify-center rounded-lg border border-pure-white/10 text-pure-white/40 hover:text-hologram-lime hover:border-hologram-lime/30 hover:bg-hologram-lime/5 disabled:opacity-15 disabled:cursor-not-allowed transition-all duration-200 cursor-pointer"
                 aria-label="Previous slide"
               >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
               </button>
               <button
                 onClick={next}
@@ -149,7 +148,7 @@ export default function Home() {
                 className="w-8 h-8 flex items-center justify-center rounded-lg border border-pure-white/10 text-pure-white/40 hover:text-hologram-lime hover:border-hologram-lime/30 hover:bg-hologram-lime/5 disabled:opacity-15 disabled:cursor-not-allowed transition-all duration-200 cursor-pointer"
                 aria-label="Next slide"
               >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6" /></svg>
               </button>
             </div>
           </div>
